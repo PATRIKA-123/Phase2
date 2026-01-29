@@ -5,7 +5,7 @@ const RightCardContent = (props) => {
     console.log(props.color);
     
     return (
-        <div className='absolute top-0 left-0 h-full w-full p-8 flex flex-col justify-between bg-gradient-to-t from-black/80 via-black/40 to-transparent transition-smooth'>
+        <div className='absolute top-0 left-0 h-full w-full p-8 flex flex-col justify-between bg-gradient-to- from-black/80 via-black/40 to-transparent transition-smooth'>
             <h2 className='bg-white text-xl font-semibold rounded-full h-12 w-12 flex justify-center items-center animate-pulse-glow'>{props.id+1}</h2>
             <div className='animate-fadeInUp'>
                 <p className='text-shadow-2xs text-xl leading-relaxed text-white mb-14'>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Iure accusamus cupiditate voluptatibus mollitia alias tempora.</p>
