@@ -9,6 +9,11 @@ const App = () => {
   const [index, setIndex] = useState(1)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [showFavorites, setShowFavorites] = useState(false)
+  const [favorites, setFavorites] = useState(() => {
+    const saved = localStorage.getItem('gallery-favorites')
+    return saved ? JSON.parse(saved) : []
+  })
 
   const getData = async () => {
     try {
@@ -31,6 +36,18 @@ const App = () => {
     getData()
   }, [index])
 
+  const toggleFavorite = (id) => {
+    const updatedFavorites = favorites.includes(id)
+      ? favorites.filter(fav => fav !== id)
+      : [...favorites, id]
+    setFavorites(updatedFavorites)
+    localStorage.setItem('gallery-favorites', JSON.stringify(updatedFavorites))
+  }
+
+  const displayedData = showFavorites 
+    ? userData.filter(item => favorites.includes(item.id))
+    : userData
+
   let content
 
   if (loading) {
@@ -45,9 +62,20 @@ const App = () => {
         {error}
       </h3>
     )
+  } else if (displayedData.length === 0 && showFavorites) {
+    content = (
+      <h3 className='text-gray-400 text-sm font-semibold'>
+        No favorites yet!
+      </h3>
+    )
   } else {
-    content = userData.map((elem) => (
-      <Card key={elem.id} elem={elem} />
+    content = displayedData.map((elem) => (
+      <Card 
+        key={elem.id} 
+        elem={elem} 
+        isFavorite={favorites.includes(elem.id)}
+        onToggleFavorite={() => toggleFavorite(elem.id)}
+      />
     ))
   }
 
@@ -67,7 +95,21 @@ const App = () => {
         </motion.div>
       </AnimatePresence>
 
-      <div className='flex justify-center gap-6 items-center p-4 backdrop-blur-md'>
+      <div className='flex justify-center gap-6 items-center p-4 backdrop-blur-md flex-wrap'>
+
+        <motion.button
+          onClick={() => setShowFavorites(!showFavorites)}
+          animate={{ scale: showFavorites ? 1.05 : 1 }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          className={`px-4 py-2 rounded font-semibold text-sm transition-all ${
+            showFavorites 
+              ? 'bg-red-500 text-white shadow-lg shadow-red-500/50' 
+              : 'bg-gray-600 text-white hover:bg-gray-700'
+          }`}
+        >
+          ❤️ {showFavorites ? 'Favorites' : 'All'} ({favorites.length})
+        </motion.button>
 
         <button
           disabled={index === 1 || loading}
